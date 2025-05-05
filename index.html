@@ -3,22 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do List App : Easy Tutorials</title>
+    <title>To-Do List App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="todo-app">
-            <h2>To-Do List <img src="images/icon.png" alt=""></h2>
+            <h2>
+                <i class="fas fa-clipboard-list"></i>
+                To-Do List
+            </h2>
             <div class="row">
                 <input type="text" id="input-box" placeholder="Add your text">
-                <button onclick="addTask()">Add</button>
+                <button onclick="addTask()">
+                    <i class="fas fa-plus"></i> Add
+                </button>
+            </div>
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="pending">Pending</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
             </div>
             <ul id="list-container">
-                <!-- <li class="checked">Task 1</li>
-                <li>Task 2</li>
-                <li>Task 3</li> -->
+                <!-- Tasks will be added here -->
             </ul>
+            <div class="stats">
+                <span id="task-count">0 tasks</span>
+                <button onclick="clearCompleted()" class="clear-btn">
+                    <i class="fas fa-trash"></i> Clear Completed
+                </button>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
