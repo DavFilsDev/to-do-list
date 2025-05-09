@@ -16,6 +16,17 @@
             </h2>
             <div class="row">
                 <input type="text" id="input-box" placeholder="Add your text">
+                <div class="priority-selector">
+                    <button type="button" class="priority-btn" data-priority="low" title="Low Priority">
+                        <i class="fas fa-arrow-down"></i> Low
+                    </button>
+                    <button type="button" class="priority-btn" data-priority="medium" title="Medium Priority">
+                        <i class="fas fa-equals"></i> Medium
+                    </button>
+                    <button type="button" class="priority-btn active" data-priority="high" title="High Priority">
+                        <i class="fas fa-exclamation"></i> High
+                    </button>
+                </div>
                 <button onclick="addTask()">
                     <i class="fas fa-plus"></i> Add
                 </button>
