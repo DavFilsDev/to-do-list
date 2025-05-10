@@ -238,3 +238,181 @@ ul li span:hover {
         text-align: center;
     }
 }
+
+/* Priority Styles */
+.priority-selector {
+    display: flex;
+    gap: 5px;
+    margin: 0 10px;
+}
+
+.priority-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 20px;
+    background: #f1f1f1;
+    color: #666;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.priority-btn:hover {
+    transform: translateY(-2px);
+}
+
+.priority-btn.active {
+    font-weight: bold;
+}
+
+/* Priority Colors */
+.priority-btn[data-priority="high"] {
+    color: #dc3545;
+}
+
+.priority-btn[data-priority="high"].active {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.priority-btn[data-priority="medium"] {
+    color: #ffc107;
+}
+
+.priority-btn[data-priority="medium"].active {
+    background: #ffc107;
+    color: white;
+    border-color: #ffc107;
+}
+
+.priority-btn[data-priority="low"] {
+    color: #28a745;
+}
+
+.priority-btn[data-priority="low"].active {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+
+/* Task Priority Indicators */
+.task-priority {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 60%;
+    border-radius: 4px;
+}
+
+.priority-high .task-priority {
+    background: #dc3545;
+}
+
+.priority-medium .task-priority {
+    background: #ffc107;
+}
+
+.priority-low .task-priority {
+    background: #28a745;
+}
+
+/* Priority Labels in Task List */
+.task-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.priority-label {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.priority-high .priority-label {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.priority-medium .priority-label {
+    background: rgba(255, 193, 7, 0.1);
+    color: #856404;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.priority-low .priority-label {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+/* Priority Filter */
+.filter-btn[data-filter="high-priority"] {
+    color: #dc3545;
+}
+
+.filter-btn[data-filter="medium-priority"] {
+    color: #ffc107;
+}
+
+.filter-btn[data-filter="low-priority"] {
+    color: #28a745;
+}
+
+.filter-btn[data-filter="high-priority"].active {
+    background: #dc3545;
+    color: white;
+}
+
+.filter-btn[data-filter="medium-priority"].active {
+    background: #ffc107;
+    color: white;
+}
+
+.filter-btn[data-filter="low-priority"].active {
+    background: #28a745;
+    color: white;
+}
+
+/* Update task item spacing for priority */
+ul li {
+    padding-left: 70px; /* Increased for priority indicator */
+}
+
+/* Responsive adjustments for priority selector */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+    }
+    
+    .priority-selector {
+        margin: 10px 0;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    ul li {
+        padding-left: 65px;
+    }
+}
+
+@media (max-width: 480px) {
+    .priority-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+    
+    .priority-btn i {
+        font-size: 10px;
+    }
+}
