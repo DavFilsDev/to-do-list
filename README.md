@@ -43,11 +43,23 @@ project/
 - FontAwesome Icons
 - localStorage API
 
+## New Features (Priority System)
+
+- **Priority Levels**: Each task can be assigned High/Medium/Low priority
+- **Color Coding**: 
+  - 🔴 High Priority (Red)
+  - 🟡 Medium Priority (Yellow/Yellow)
+  - 🟢 Low Priority (Green)
+- **Visual Indicators**: Color-coded left border and priority labels
+- **Priority Filtering**: Filter tasks by priority level
+- **Right-click Menu**: Right-click any task to change its priority
+- **Default Priority**: Set default priority before adding task
+- **Priority Statistics**: Included in task count display
+
 ## Future Enhancements
 
 - Task categories/tags
 - Due dates and reminders
-- Task priorities
 - Drag and drop reordering
 - Export/Import tasks
 - Dark/Light theme toggle
