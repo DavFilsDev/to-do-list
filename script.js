@@ -2,23 +2,23 @@ const inputBox = document.getElementById("input-box");
 const listContainer = document.getElementById("list-container");
 const taskCount = document.getElementById("task-count");
 const filterButtons = document.querySelectorAll(".filter-btn");
-let currentPriority = "high"; // Default priority
+
+// Priority variables
+let currentPriority = "high";
 const priorityButtons = document.querySelectorAll(".priority-btn");
 
 // Load data when page loads
 document.addEventListener('DOMContentLoaded', () => {
     showData();
     updateTaskCount();
-});
-
-priorityButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        // Remove active class from all priority buttons
-        priorityButtons.forEach(btn => btn.classList.remove("active"));
-        // Add active class to clicked button
-        button.classList.add("active");
-        // Update current priority
-        currentPriority = button.dataset.priority;
+    
+    // Initialize priority buttons
+    priorityButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            priorityButtons.forEach(btn => btn.classList.remove("active"));
+            button.classList.add("active");
+            currentPriority = button.dataset.priority;
+        });
     });
 });
 
@@ -38,54 +38,62 @@ const addTask = () => {
 const createTaskElement = (taskText, priority = currentPriority) => {
     let li = document.createElement("li");
     li.className = `priority-${priority}`;
+    li.dataset.priority = priority;
+    li.dataset.created = new Date().toISOString();
+    li.dataset.completed = "";
     
-    // Add priority indicator
-    const priorityDiv = document.createElement("div");
-    priorityDiv.className = "task-priority";
+    // Create priority indicator (colored bar on left)
+    const priorityIndicator = document.createElement("div");
+    priorityIndicator.className = "task-priority";
+    
+    // Create checkbox area (the ::before will handle the visual)
     
     // Create task content container
     const contentDiv = document.createElement("div");
     contentDiv.className = "task-content";
     
-    // Add priority label
+    // Create priority label
     const priorityLabel = document.createElement("span");
     priorityLabel.className = "priority-label";
-    priorityLabel.textContent = priority;
+    priorityLabel.textContent = priority.toUpperCase();
     
-    // Add task text
-    const taskSpan = document.createElement("span");
-    taskSpan.textContent = taskText;
+    // Create task text span
+    const taskTextSpan = document.createElement("span");
+    taskTextSpan.className = "task-text";
+    taskTextSpan.textContent = taskText;
     
     // Assemble content
     contentDiv.appendChild(priorityLabel);
-    contentDiv.appendChild(taskSpan);
+    contentDiv.appendChild(taskTextSpan);
     
     // Assemble task item
-    li.appendChild(priorityDiv);
+    li.appendChild(priorityIndicator);
     li.appendChild(contentDiv);
     
+    // Create delete button
+    const deleteSpan = document.createElement("span");
+    deleteSpan.innerHTML = '<i class="fas fa-times"></i>';
+    deleteSpan.className = "delete-btn";
+    
+    // Add to list
+    li.appendChild(deleteSpan);
     listContainer.appendChild(li);
-    
-    // Add delete button
-    let span = document.createElement("span");
-    span.innerHTML = '<i class="fas fa-times"></i>';
-    li.appendChild(span);
-    
-    // Add creation date and priority
-    li.dataset.created = new Date().toISOString();
-    li.dataset.completed = "";
-    li.dataset.priority = priority;
     
     return li;
 }
 
 listContainer.addEventListener('click', (e) => {
-    if (e.target.tagName === "LI") {
-        toggleTaskCompletion(e.target);
-    }  
-    else if (e.target.tagName === "SPAN" || e.target.parentElement.tagName === "SPAN") {
-        const span = e.target.tagName === "SPAN" ? e.target : e.target.parentElement;
-        deleteTask(span.parentElement);
+    // Check if clicked on delete button or its icon
+    if (e.target.classList.contains('delete-btn') || e.target.closest('.delete-btn')) {
+        const li = e.target.closest('li');
+        if (li) {
+            deleteTask(li);
+        }
+    }
+    // Check if clicked on LI (task item) but not on delete button
+    else if (e.target.tagName === "LI" || e.target.closest("li")) {
+        const li = e.target.tagName === "LI" ? e.target : e.target.closest("li");
+        toggleTaskCompletion(li);
     }
 }, false);
 
@@ -110,9 +118,7 @@ const deleteTask = (taskElement) => {
 // Filter tasks
 filterButtons.forEach(button => {
     button.addEventListener('click', () => {
-        // Remove active class from all buttons
         filterButtons.forEach(btn => btn.classList.remove("active"));
-        // Add active class to clicked button
         button.classList.add("active");
         
         const filter = button.dataset.filter;
@@ -125,7 +131,7 @@ const filterTasks = (filter) => {
     
     tasks.forEach(task => {
         const isCompleted = task.classList.contains("checked");
-        const priority = task.dataset.priority;
+        const priority = task.dataset.priority || 'medium';
         
         switch(filter) {
             case 'pending':
@@ -174,7 +180,6 @@ const updateTaskCount = () => {
 }
 
 const showNotification = (message) => {
-    // Create notification element
     const notification = document.createElement("div");
     notification.className = "notification";
     notification.textContent = message;
@@ -193,7 +198,6 @@ const showNotification = (message) => {
     
     document.body.appendChild(notification);
     
-    // Remove notification after 3 seconds
     setTimeout(() => {
         notification.style.animation = "slideOut 0.3s ease";
         setTimeout(() => notification.remove(), 300);
@@ -201,83 +205,122 @@ const showNotification = (message) => {
 }
 
 // Add CSS for notifications
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
+if (!document.querySelector('style[data-notifications]')) {
+    const style = document.createElement('style');
+    style.setAttribute('data-notifications', 'true');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
-        to {
-            transform: translateX(0);
-            opacity: 1;
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
         }
-    }
-    
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
+    `;
+    document.head.appendChild(style);
+}
 
 const saveData = () => {
-    localStorage.setItem("todoData", listContainer.innerHTML);
+    // Save only the essential data, not the entire HTML
+    const tasks = listContainer.querySelectorAll("li");
+    const taskData = Array.from(tasks).map(task => ({
+        text: task.querySelector('.task-text')?.textContent || '',
+        priority: task.dataset.priority || 'medium',
+        completed: task.classList.contains('checked'),
+        created: task.dataset.created || new Date().toISOString(),
+        completedDate: task.dataset.completed || ''
+    }));
+    
+    localStorage.setItem("todoData", JSON.stringify(taskData));
 }
 
 const showData = () => {
     const savedData = localStorage.getItem("todoData");
     if (savedData) {
-        listContainer.innerHTML = savedData;
-        
-        // Reattach event listeners and restore priority classes
-        const tasks = listContainer.querySelectorAll("li");
-        tasks.forEach(task => {
-            // Restore priority class
-            const priority = task.dataset.priority || 'medium';
-            task.className = `priority-${priority} ${task.classList.contains('checked') ? 'checked' : ''}`;
+        try {
+            const taskData = JSON.parse(savedData);
+            listContainer.innerHTML = ''; // Clear existing tasks
             
-            // Add delete button if missing
-            if (!task.querySelector("span")) {
-                let span = document.createElement("span");
-                span.innerHTML = '<i class="fas fa-times"></i>';
-                task.appendChild(span);
+            taskData.forEach(task => {
+                const li = createTaskElement(task.text, task.priority);
+                
+                if (task.completed) {
+                    li.classList.add("checked");
+                    li.dataset.completed = task.completedDate || new Date().toISOString();
+                }
+                
+                li.dataset.created = task.created || new Date().toISOString();
+            });
+        } catch (e) {
+            console.error("Error loading saved data:", e);
+            // Fallback to old method if JSON parsing fails
+            const oldData = localStorage.getItem("data");
+            if (oldData) {
+                listContainer.innerHTML = oldData;
+                // Try to fix any old tasks
+                const oldTasks = listContainer.querySelectorAll("li");
+                oldTasks.forEach(task => {
+                    if (!task.querySelector('.task-content')) {
+                        // This is an old format task, recreate it
+                        const text = task.textContent.replace('×', '').trim();
+                        const priorityMatch = text.match(/\b(HIGH|MEDIUM|LOW)\b/i);
+                        let priority = 'medium';
+                        let actualText = text;
+                        
+                        if (priorityMatch) {
+                            priority = priorityMatch[0].toLowerCase();
+                            actualText = text.replace(priorityMatch[0], '').trim();
+                        }
+                        
+                        // Create new structure
+                        task.innerHTML = '';
+                        task.className = `priority-${priority}`;
+                        task.dataset.priority = priority;
+                        
+                        const priorityIndicator = document.createElement("div");
+                        priorityIndicator.className = "task-priority";
+                        
+                        const contentDiv = document.createElement("div");
+                        contentDiv.className = "task-content";
+                        
+                        const priorityLabel = document.createElement("span");
+                        priorityLabel.className = "priority-label";
+                        priorityLabel.textContent = priority.toUpperCase();
+                        
+                        const taskTextSpan = document.createElement("span");
+                        taskTextSpan.className = "task-text";
+                        taskTextSpan.textContent = actualText;
+                        
+                        contentDiv.appendChild(priorityLabel);
+                        contentDiv.appendChild(taskTextSpan);
+                        
+                        task.appendChild(priorityIndicator);
+                        task.appendChild(contentDiv);
+                        
+                        const deleteSpan = document.createElement("span");
+                        deleteSpan.innerHTML = '<i class="fas fa-times"></i>';
+                        deleteSpan.className = "delete-btn";
+                        task.appendChild(deleteSpan);
+                    }
+                });
             }
-            
-            // Ensure priority indicator exists
-            if (!task.querySelector(".task-priority")) {
-                const priorityDiv = document.createElement("div");
-                priorityDiv.className = "task-priority";
-                task.prepend(priorityDiv);
-            }
-            
-            // Ensure priority label exists in content
-            if (!task.querySelector(".priority-label")) {
-                const content = task.querySelector(".task-content") || task;
-                const text = content.textContent || content.innerHTML;
-                const priority = task.dataset.priority || 'medium';
-                
-                // Clear and rebuild content
-                content.innerHTML = '';
-                
-                const priorityLabel = document.createElement("span");
-                priorityLabel.className = "priority-label";
-                priorityLabel.textContent = priority;
-                
-                const taskSpan = document.createElement("span");
-                taskSpan.textContent = text.replace('×', '').trim();
-                
-                content.appendChild(priorityLabel);
-                content.appendChild(taskSpan);
-            }
-        });
+        }
     }
+    updateTaskCount();
 }
 
 // Add keyboard support
@@ -287,48 +330,19 @@ inputBox.addEventListener("keypress", (e) => {
     }
 });
 
-// This function to allow changing priority of existing tasks
-const updateTaskPriority = (taskElement, newPriority) => {
-    // Remove old priority class
-    taskElement.classList.remove(`priority-${taskElement.dataset.priority}`);
-    
-    // Update priority
-    taskElement.dataset.priority = newPriority;
-    taskElement.className = `priority-${newPriority} ${taskElement.classList.contains('checked') ? 'checked' : ''}`;
-    
-    // Update priority label
-    const priorityLabel = taskElement.querySelector(".priority-label");
-    if (priorityLabel) {
-        priorityLabel.textContent = newPriority;
-        priorityLabel.className = "priority-label";
-    }
-    
-    // Update priority indicator
-    const priorityIndicator = taskElement.querySelector(".task-priority");
-    if (priorityIndicator) {
-        priorityIndicator.className = "task-priority";
-    }
-    
-    saveData();
-    showNotification(`Task priority changed to ${newPriority}!`);
-}
-
-// This to your existing event listeners
+// Add priority context menu
 listContainer.addEventListener('contextmenu', (e) => {
-    if (e.target.tagName === "LI" || e.target.closest("li")) {
+    if (e.target.closest("li")) {
         e.preventDefault();
-        const taskElement = e.target.tagName === "LI" ? e.target : e.target.closest("li");
+        const taskElement = e.target.closest("li");
         showPriorityMenu(e, taskElement);
     }
 });
 
-// Add priority context menu function
 const showPriorityMenu = (event, taskElement) => {
-    // Remove existing menu if any
     const existingMenu = document.querySelector(".priority-menu");
     if (existingMenu) existingMenu.remove();
     
-    // Create menu
     const menu = document.createElement("div");
     menu.className = "priority-menu";
     menu.innerHTML = `
@@ -346,7 +360,6 @@ const showPriorityMenu = (event, taskElement) => {
         </div>
     `;
     
-    // Style the menu
     menu.style.cssText = `
         position: fixed;
         top: ${event.clientY}px;
@@ -361,15 +374,14 @@ const showPriorityMenu = (event, taskElement) => {
     
     document.body.appendChild(menu);
     
-    // Add click handlers
-    menu.querySelectorAll(".menu-item").forEach(item => {
+    // Add menu item styles
+    const menuItems = menu.querySelectorAll(".menu-item");
+    menuItems.forEach(item => {
         item.addEventListener('click', () => {
-            const newPriority = item.dataset.priority;
-            updateTaskPriority(taskElement, newPriority);
+            updateTaskPriority(taskElement, item.dataset.priority);
             menu.remove();
         });
         
-        // Style menu items
         item.style.cssText = `
             padding: 10px 16px;
             cursor: pointer;
@@ -388,7 +400,7 @@ const showPriorityMenu = (event, taskElement) => {
         });
     });
     
-    // Style priority dots
+    // Add priority dot styles
     const style = document.createElement('style');
     style.textContent = `
         .priority-dot {
@@ -402,7 +414,6 @@ const showPriorityMenu = (event, taskElement) => {
     `;
     document.head.appendChild(style);
     
-    // Close menu when clicking outside
     setTimeout(() => {
         const closeMenu = (e) => {
             if (!menu.contains(e.target)) {
@@ -415,3 +426,59 @@ const showPriorityMenu = (event, taskElement) => {
         document.addEventListener('contextmenu', closeMenu);
     }, 0);
 }
+
+const updateTaskPriority = (taskElement, newPriority) => {
+    taskElement.classList.remove(`priority-${taskElement.dataset.priority}`);
+    taskElement.dataset.priority = newPriority;
+    taskElement.className = `priority-${newPriority} ${taskElement.classList.contains('checked') ? 'checked' : ''}`;
+    
+    // Update priority label
+    const priorityLabel = taskElement.querySelector(".priority-label");
+    if (priorityLabel) {
+        priorityLabel.textContent = newPriority.toUpperCase();
+    }
+    
+    saveData();
+    showNotification(`Task priority changed to ${newPriority}!`);
+}
+
+// Clear existing tasks and reload with proper structure
+function fixExistingTasks() {
+    const tasks = listContainer.querySelectorAll("li");
+    if (tasks.length > 0) {
+        const confirmFix = confirm("Found tasks with old structure. Would you like to fix them to show priority labels properly?");
+        if (confirmFix) {
+            tasks.forEach(task => {
+                if (!task.querySelector('.task-content')) {
+                    // This is an old format task
+                    const text = task.textContent.replace('×', '').trim();
+                    const priorityMatch = text.match(/\b(HIGH|MEDIUM|LOW)\b/i);
+                    let priority = 'medium';
+                    let actualText = text;
+                    
+                    if (priorityMatch) {
+                        priority = priorityMatch[0].toLowerCase();
+                        actualText = text.replace(priorityMatch[0], '').trim();
+                    }
+                    
+                    // Check if task was completed
+                    const wasChecked = task.classList.contains('checked');
+                    
+                    // Create new task element
+                    const newTask = createTaskElement(actualText, priority);
+                    if (wasChecked) {
+                        newTask.classList.add("checked");
+                    }
+                    
+                    // Replace old task with new one
+                    task.parentNode.replaceChild(newTask, task);
+                }
+            });
+            saveData();
+            showNotification("Tasks fixed successfully!");
+        }
+    }
+}
+
+// Run fix on load if needed
+setTimeout(fixExistingTasks, 1000);

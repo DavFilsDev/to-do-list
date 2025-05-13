@@ -4,7 +4,6 @@
     font-family: 'Poppins', sans-serif;
     box-sizing: border-box;
 }
-
 .container {
     width: 100%;
     min-height: 100vh;
@@ -14,7 +13,6 @@
     justify-content: center;
     align-items: center;
 }
-
 .todo-app {
     width: 100%;
     max-width: 800px;
@@ -24,7 +22,6 @@
     background-color: #fff;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
-
 .todo-app h2 {
     color: #002765;
     display: flex;
@@ -33,11 +30,9 @@
     font-size: 24px;
     gap: 10px;
 }
-
 .todo-app h2 i {
     font-size: 28px;
 }
-
 .row {
     display: flex;
     align-items: center;
@@ -48,7 +43,6 @@
     margin-bottom: 25px;
     gap: 10px;
 }
-
 input {
     flex: 1;
     border: none;
@@ -58,7 +52,6 @@ input {
     font-size: 16px;
     font-weight: 500;
 }
-
 button {
     border: none;
     outline: none;
@@ -75,20 +68,17 @@ button {
     gap: 8px;
     justify-content: center;
 }
-
 button:hover {
     background: #ff3d27;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 89, 69, 0.3);
 }
-
 .filters {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
     flex-wrap: wrap;
 }
-
 .filter-btn {
     background: #f1f1f1;
     color: #555;
@@ -97,20 +87,17 @@ button:hover {
     border-radius: 20px;
     flex: 1;
 }
-
 .filter-btn.active {
     background: #ff5945;
     color: white;
 }
-
 ul {
     margin-top: 20px;
 }
-
 ul li {
     list-style: none;
     font-size: 17px;
-    padding: 16px 50px 16px 50px;
+    padding: 16px 60px 16px 80px;
     user-select: none;
     cursor: pointer;
     position: relative;
@@ -119,13 +106,14 @@ ul li {
     background: #f9f9f9;
     transition: all 0.3s ease;
     border-left: 4px solid #ff5945;
+    display: flex;
+    align-items: center;
+    min-height: 60px;
 }
-
 ul li:hover {
     background: #f1f1f1;
     transform: translateX(5px);
 }
-
 ul li::before {
     content: '';
     position: absolute;
@@ -133,21 +121,21 @@ ul li::before {
     width: 24px;
     border-radius: 50%;
     background: #e0e0e0;
-    top: 15px;
-    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 45px; 
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1;
 }
-
 ul li.checked {
     color: #888;
     text-decoration: line-through;
     background: #f0f0f0;
     border-left-color: #4CAF50;
 }
-
 ul li.checked::before {
     background: #4CAF50;
     content: '✓';
@@ -155,8 +143,8 @@ ul li.checked::before {
     font-size: 14px;
     font-weight: bold;
 }
-
-ul li span {
+/* FIXED: Delete button positioning */
+ul li .delete-btn {
     position: absolute;
     right: 15px;
     top: 50%;
@@ -172,13 +160,13 @@ ul li span {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 2;
+    cursor: pointer;
 }
-
-ul li span:hover {
+ul li .delete-btn:hover {
     background: #ffdddd;
     color: #ff5945;
 }
-
 .stats {
     display: flex;
     justify-content: space-between;
@@ -187,23 +175,19 @@ ul li span:hover {
     padding-top: 20px;
     border-top: 2px solid #f0f0f0;
 }
-
 #task-count {
     font-size: 14px;
     color: #666;
     font-weight: 500;
 }
-
 .clear-btn {
     background: #6c757d;
     padding: 10px 20px;
     font-size: 14px;
 }
-
 .clear-btn:hover {
     background: #5a6268;
 }
-
 /* Responsive design */
 @media (max-width: 480px) {
     .todo-app {
@@ -238,14 +222,12 @@ ul li span:hover {
         text-align: center;
     }
 }
-
 /* Priority Styles */
 .priority-selector {
     display: flex;
     gap: 5px;
     margin: 0 10px;
 }
-
 .priority-btn {
     padding: 8px 12px;
     font-size: 12px;
@@ -259,136 +241,140 @@ ul li span:hover {
     gap: 5px;
     white-space: nowrap;
 }
-
 .priority-btn:hover {
     transform: translateY(-2px);
 }
-
 .priority-btn.active {
     font-weight: bold;
 }
-
 /* Priority Colors */
 .priority-btn[data-priority="high"] {
     color: #dc3545;
 }
-
 .priority-btn[data-priority="high"].active {
     background: #dc3545;
     color: white;
     border-color: #dc3545;
 }
-
 .priority-btn[data-priority="medium"] {
     color: #ffc107;
 }
-
 .priority-btn[data-priority="medium"].active {
     background: #ffc107;
     color: white;
     border-color: #ffc107;
 }
-
 .priority-btn[data-priority="low"] {
     color: #28a745;
 }
-
 .priority-btn[data-priority="low"].active {
     background: #28a745;
     color: white;
     border-color: #28a745;
 }
-
-/* Task Priority Indicators */
+/* FIXED: Task Priority Indicators - Positioned before checkbox */
 .task-priority {
     position: absolute;
-    left: 10px;
+    left: 15px;
     top: 50%;
     transform: translateY(-50%);
     width: 8px;
-    height: 60%;
+    height: 70%;
     border-radius: 4px;
+    z-index: 0;
 }
-
 .priority-high .task-priority {
     background: #dc3545;
 }
-
 .priority-medium .task-priority {
     background: #ffc107;
 }
-
 .priority-low .task-priority {
     background: #28a745;
 }
-
-/* Priority Labels in Task List */
+/* FIXED: Task content container */
 .task-content {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: calc(100% - 50px); /* Space for delete button */
 }
-
 .priority-label {
-    padding: 2px 8px;
+    padding: 4px 12px;
     border-radius: 12px;
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    min-width: 70px;
+    text-align: center;
+    flex-shrink: 0;
 }
-
 .priority-high .priority-label {
     background: rgba(220, 53, 69, 0.1);
     color: #dc3545;
     border: 1px solid rgba(220, 53, 69, 0.3);
 }
-
 .priority-medium .priority-label {
     background: rgba(255, 193, 7, 0.1);
     color: #856404;
     border: 1px solid rgba(255, 193, 7, 0.3);
 }
-
 .priority-low .priority-label {
     background: rgba(40, 167, 69, 0.1);
     color: #28a745;
     border: 1px solid rgba(40, 167, 69, 0.3);
 }
-
+/* FIXED: Task text styling */
+.task-text {
+    flex: 1;
+    word-break: break-word;
+    min-width: 0; /* Allow shrinking */
+    overflow-wrap: break-word;
+}
+/* Priority border colors based on priority */
+.priority-high {
+    border-left-color: #dc3545 !important;
+}
+.priority-medium {
+    border-left-color: #ffc107 !important;
+}
+.priority-low {
+    border-left-color: #28a745 !important;
+}
+.priority-high.checked {
+    border-left-color: #dc3545 !important;
+}
+.priority-medium.checked {
+    border-left-color: #ffc107 !important;
+}
+.priority-low.checked {
+    border-left-color: #28a745 !important;
+}
 /* Priority Filter */
 .filter-btn[data-filter="high-priority"] {
     color: #dc3545;
 }
-
 .filter-btn[data-filter="medium-priority"] {
     color: #ffc107;
 }
-
 .filter-btn[data-filter="low-priority"] {
     color: #28a745;
 }
-
 .filter-btn[data-filter="high-priority"].active {
     background: #dc3545;
     color: white;
 }
-
 .filter-btn[data-filter="medium-priority"].active {
     background: #ffc107;
     color: white;
 }
-
 .filter-btn[data-filter="low-priority"].active {
     background: #28a745;
     color: white;
 }
-
-/* Update task item spacing for priority */
-ul li {
-    padding-left: 70px; /* Increased for priority indicator */
-}
-
 /* Responsive adjustments for priority selector */
 @media (max-width: 768px) {
     .row {
@@ -401,11 +387,21 @@ ul li {
         justify-content: center;
     }
     
+    .task-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .priority-label {
+        align-self: flex-start;
+    }
+    
     ul li {
-        padding-left: 65px;
+        padding-left: 70px;
+        padding-right: 50px;
     }
 }
-
 @media (max-width: 480px) {
     .priority-btn {
         padding: 6px 8px;
@@ -414,5 +410,21 @@ ul li {
     
     .priority-btn i {
         font-size: 10px;
+    }
+    
+    ul li {
+        padding: 12px 50px 12px 65px;
+    }
+    
+    ul li::before {
+        left: 35px;
+    }
+    
+    .task-priority {
+        left: 10px;
+    }
+    
+    .task-content {
+        max-width: calc(100% - 40px);
     }
 }
